@@ -3,6 +3,7 @@
 #include <cstdlib>  // For malloc and free
 #include <iostream> // For std::cout
 #include <stdexcept> // For std::bad_alloc
+#include <ctime>
 
 class Database {
     private:
@@ -11,6 +12,11 @@ class Database {
         std::string password;
         bool connected = false;
         static Database* instance;
+
+        //ENHANCED ADDITIONS
+
+        time_t last_activity;
+        static const int TIMEOUT = 5;
 
     // constructor that helps creating instance of db(e.g. sales.db) accepts name of the database, username, password.
     // ToDo
@@ -44,13 +50,25 @@ class Database {
         }
 
         //setting and getting password
-        void set_username(std::string user);
+        void set_username(const std::string& user);
         std::string get_username();
 
         //setting and getting password
-        void set_password(std::string pass);
+        void set_password(const std::string& pass);
         std::string get_password();
 
         // The static "resetInstance" as defined below.
         static void resetInstance();
+
+        /***********************
+        ***ENHANCED ADDITIONS*** 
+        ************************/
+        Database(const Database& other); //copy constructor
+        Database& operator=(const Database& other); //copy assignment
+        Database(Database&& other); //move constructor
+        Database& operator=(Database&& other); //move assignment
+
+        //timer methods
+        bool isTimeout();
+        void refreshConnection();
 };
